@@ -1,0 +1,9 @@
+<ion-view view-title="Scanning">
+    <ion-content class="padding">
+            <div class="scan" ng-click="scan()" id="scan" style="font-size: 2rem; background-color: #1EBDFF; vertical-align: middle; text-align: center; width: 80%; margin: 0 auto; border-radius: 5px; box-shadow: 0 0 5px #888;">
+                <span ng-if="success === null">Scan</span>
+                <span ng-if="success === true" style="color: green; font-size: 4rem;" class="ion-android-checkmark-circle"></span>
+                <span ng-if="success === false" style="color: red; font-size: 4rem;" class="ion-android-cancel"></span>
+            </div>
+    </ion-content>
+</ion-view>
