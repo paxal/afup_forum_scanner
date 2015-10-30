@@ -1,6 +1,6 @@
-angular.module('starter.controllers', [ 'ngCordova', 'ionic' ])
+angular.module('starter.controllers', [ 'ngCordova', 'ionic', 'starter.services' ])
 
-.controller('DashCtrl', function($scope, $cordovaBarcodeScanner, $ionicPopup) {
+.controller('DashCtrl', function($scope, $cordovaBarcodeScanner, $ionicPopup, Scans, $rootScope) {
         var params = {};
 
         (function () {
@@ -9,8 +9,10 @@ angular.module('starter.controllers', [ 'ngCordova', 'ionic' ])
         })();
 
         var onSuccess = function (imageData) {
-            storage.push(imageData['text']);
+            Scans.add(imageData['text']);
             $scope.success = true;
+
+            $rootScope.$broadcast('ScansUpdate');
         };
 
         var onFailure = function (error) {
@@ -26,6 +28,11 @@ angular.module('starter.controllers', [ 'ngCordova', 'ionic' ])
         $scope.scan = function () {
             if (typeof cordova === 'undefined') {
                 $scope.success = !$scope.success;
+                if ($scope.success) {
+                    onSuccess({'text': 'http://afup.org/'});
+                } else {
+                    onFailure({'cancelled': 1});
+                }
                 return;
             }
             $cordovaBarcodeScanner.scan().then(function(imageData) {
@@ -36,7 +43,7 @@ angular.module('starter.controllers', [ 'ngCordova', 'ionic' ])
         };
 })
 
-.controller('SendCtrl', function($scope) {
+.controller('SendCtrl', function($scope, Scans) {
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
   // To listen for when this page is active (for example, to refresh data),
@@ -44,4 +51,10 @@ angular.module('starter.controllers', [ 'ngCordova', 'ionic' ])
   //
   //$scope.$on('$ionicView.enter', function(e) {
   //});
+        var reloadEntries = function () {
+            $scope.entries = Scans.getAll();
+        };
+        reloadEntries();
+
+        $scope.$on('ScansUpdate', reloadEntries);
 });
