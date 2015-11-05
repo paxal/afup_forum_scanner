@@ -4,8 +4,10 @@
   "devDependencies": {
     "ionic": "driftyco/ionic-bower#1.1.0"
   },
-    "dependencies": {
-        "ngCordova": "master",
-	"jQuery": "^2.0"
-    }
+  "dependencies": {
+    "ngCordova": "master",
+    "jQuery": "^2.0",
+    "angular-md5": "^0.1.8",
+    "angular-resource": "~1.4.7"
+  }
 }

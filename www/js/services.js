@@ -1,4 +1,66 @@
-angular.module('starter.services', [])
+angular.module('starter.services', [ 'ngMd5', 'ngResource' ])
+
+.factory(
+    'AfupConfig',
+    [
+        '$window',
+        '$http',
+        'md5',
+        function ($window, $http, md5) {
+            var AfupConfig = function () {
+                this.init();
+            };
+
+            AfupConfig.prototype = {
+                API     : 'api',
+                TOKEN   : 'token',
+                MD5_SALT: 'md5_salt',
+    
+                get: function (name) {
+                    return $window.localStorage[name];
+                },
+                set: function (name, value) {
+                    return $window.localStorage[name] = value;
+                },
+                init: function () {
+                    $window.localStorage['api'] = $window.localStorage['api'] || 'http://afup.org/forumphp/register.php'
+                },
+                validateUrl: function (url) {
+                    var matches = (new RegExp('^http://m\.afup\.org/#(\d+):([\da-f]){6}', 'i')).match(url);
+                    if (null === matches) {
+                        return false;
+                    }
+
+                    var id = matches[1];
+                    var hash = matches[2];
+
+                    return hash === this._getHashForId(id);
+                },
+                _getHashForId: function (id) {
+                    return md5.createHash(AfupConfig.MD5_SALT + id).substr(2, 6);
+                },
+                // Send data
+                send: function (urls, success, failure) {
+                    $http({
+                        method: 'POST',
+                        url: this.get(this.API),
+                        headers: {
+                            'content-type': 'application/json',
+                            'x-afup-token': this.get(this.TOKEN)
+                        },
+                        data: urls
+                    }).then(function (response) {
+                        if (success) {
+                            success(response.data);
+                        }
+                    });
+                }
+            };
+
+            return new AfupConfig();
+        }
+    ]
+)
 
 .factory(
     'Scans',
@@ -21,7 +83,7 @@ angular.module('starter.services', [])
                     $window.localStorage[index] = JSON.stringify(value);
                 },
                 _getMixed: function (index) {
-                    return JSON.parse($window.localStorage[index]);
+                    return JSON.parse($window.localStorage[index] || 'null');
                 },
                 /**
                  * Add an url to the list of entries

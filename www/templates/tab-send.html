@@ -1,14 +1,22 @@
 <ion-view view-title="Send">
     <ion-content>
         <div style="display: flex; flex-direction: column;">
-            <input type="text" ng-model="post_url" />
-            <input type="submit" value="Send unsubmitted" />
-            <input type="submit" value="Send all">
-        </div>
-        <div style="display: flex; flex-direction: column;">
-            <ul>
-                <li ng-repeat="entry in entries">{{ entry.url }}</li>
-            </ul>
+            <label class="item item-input">
+                <span class="input-label">Post url</span>
+                <input type="text" ng-model="post_url" ng-change="post_url_change()" />
+            </label>
+            <label class="item item-input">
+                <span class="input-label">Post token</span>
+                <input type="text" ng-model="post_token" ng-change="post_token_change()" />
+            </label>
+            <label class="item item-input">
+                <span class="input-label">MD5 Salt</span>
+                <input type="text" ng-model="md5_salt" ng-change="md5_salt_change()" />
+            </label>
+            <hr />
+            <input class="button button-royal" type="submit" value="Send unsubmitted" ng-click="sendCurrent()" />
+            <hr />
+            <input class="button" type="submit" value="Send all" ng-click="sendAll()">
         </div>
     </ion-content>
 </ion-view>

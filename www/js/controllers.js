@@ -1,6 +1,7 @@
 angular.module('starter.controllers', [ 'ngCordova', 'ionic', 'starter.services' ])
 
-.controller('DashCtrl', function($scope, $cordovaBarcodeScanner, $ionicPopup, Scans, $rootScope) {
+.controller('DashCtrl', function($scope, $cordovaBarcodeScanner, $ionicPopup, Scans, $rootScope, AfupConfig) {
+        console.debug(AfupConfig);
         var params = {};
 
         (function () {
@@ -43,7 +44,7 @@ angular.module('starter.controllers', [ 'ngCordova', 'ionic', 'starter.services'
         };
 })
 
-.controller('SendCtrl', function($scope, Scans) {
+.controller('SendCtrl', function($scope, Scans, AfupConfig) {
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
   // To listen for when this page is active (for example, to refresh data),
@@ -57,4 +58,29 @@ angular.module('starter.controllers', [ 'ngCordova', 'ionic', 'starter.services'
         reloadEntries();
 
         $scope.$on('ScansUpdate', reloadEntries);
+
+        $scope.post_url = AfupConfig.get(AfupConfig.API);
+        $scope.post_token = AfupConfig.get(AfupConfig.TOKEN);
+        $scope.md5_salt = AfupConfig.get(AfupConfig.MD5_SALT);
+
+        $scope.post_url_change = function () {
+            AfupConfig.set(AfupConfig.API, this.post_url);
+        };
+        $scope.post_token_change = function () {
+            AfupConfig.set(AfupConfig.TOKEN, this.post_token);
+        };
+        $scope.md5_salt_change = function () {
+            AfupConfig.set(AfupConfig.MD5_SALT, this.md5_salt);
+        };
+
+        var success = function (data) {
+            console.debug(JSON.stringify(data));
+        };
+
+        $scope.sendAll = function () {
+            AfupConfig.send(Scans.getAll(), success);
+        };
+        $scope.sendCurrent = function () {
+            AfupConfig.send(Scans.getCurrent(), success);
+        };
 });
