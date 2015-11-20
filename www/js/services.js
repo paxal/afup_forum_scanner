@@ -15,7 +15,7 @@ angular.module('starter.services', [ 'ngMd5', 'ngResource' ])
                 API     : 'api',
                 TOKEN   : 'token',
                 MD5_SALT: 'md5_salt',
-    
+
                 get: function (name) {
                     return $window.localStorage[name];
                 },
@@ -25,33 +25,23 @@ angular.module('starter.services', [ 'ngMd5', 'ngResource' ])
                 init: function () {
                     $window.localStorage['api'] = $window.localStorage['api'] || 'http://afup.org/forumphp/register.php'
                 },
-                validateUrl: function (url) {
-                    var matches = (new RegExp('^http://m\.afup\.org/#(\d+):([\da-f]){6}', 'i')).match(url);
-                    if (null === matches) {
-                        return false;
-                    }
-
-                    var id = matches[1];
-                    var hash = matches[2];
-
-                    return hash === this._getHashForId(id);
-                },
-                _getHashForId: function (id) {
-                    return md5.createHash(AfupConfig.MD5_SALT + id).substr(2, 6);
-                },
                 // Send data
                 send: function (urls, success, failure) {
                     $http({
                         method: 'POST',
                         url: this.get(this.API),
                         headers: {
-                            'content-type': 'application/json',
+                            'Content-Type': 'application/json',
                             'x-afup-token': this.get(this.TOKEN)
                         },
                         data: urls
                     }).then(function (response) {
                         if (success) {
                             success(response.data);
+                        }
+                    }).catch(function (response) {
+                        if (failure) {
+                            failure();
                         }
                     });
                 }

@@ -1,20 +1,12 @@
 angular.module('starter.controllers', [ 'ngCordova', 'ionic', 'starter.services' ])
 
 .controller('DashCtrl', function($scope, $cordovaBarcodeScanner, $ionicPopup, Scans, $rootScope, AfupConfig) {
-        console.debug(AfupConfig);
         var params = {};
 
         (function () {
             var cw = $('#scan').width();
             $('#scan').css({'height': cw + 'px', 'line-height': cw + 'px'});
         })();
-
-        var onSuccess = function (imageData) {
-            Scans.add(imageData['text']);
-            $scope.success = true;
-
-            $rootScope.$broadcast('ScansUpdate');
-        };
 
         var onFailure = function (error) {
             if (error['cancelled']) {
@@ -24,13 +16,24 @@ angular.module('starter.controllers', [ 'ngCordova', 'ionic', 'starter.services'
             }
         };
 
+        var onSuccess = function (imageData) {
+            try {
+                Scans.add(imageData['text']);
+            } catch (e) {
+                onFailure(imageData);
+            }
+            $scope.success = true;
+
+            $rootScope.$broadcast('ScansUpdate');
+        };
+
         $scope.success = null;
 
         $scope.scan = function () {
             if (typeof cordova === 'undefined') {
                 $scope.success = !$scope.success;
                 if ($scope.success) {
-                    onSuccess({'text': 'http://afup.org/'});
+                    onSuccess({'text': 'http://planning.afup.org/#1234'});
                 } else {
                     onFailure({'cancelled': 1});
                 }
@@ -44,7 +47,7 @@ angular.module('starter.controllers', [ 'ngCordova', 'ionic', 'starter.services'
         };
 })
 
-.controller('SendCtrl', function($scope, Scans, AfupConfig) {
+.controller('SendCtrl', function($scope, $ionicLoading, $ionicPopup, Scans, AfupConfig) {
   // With the new view caching in Ionic, Controllers are only called
   // when they are recreated or on app start, instead of every page change.
   // To listen for when this page is active (for example, to refresh data),
@@ -73,14 +76,34 @@ angular.module('starter.controllers', [ 'ngCordova', 'ionic', 'starter.services'
             AfupConfig.set(AfupConfig.MD5_SALT, this.md5_salt);
         };
 
-        var success = function (data) {
-            console.debug(JSON.stringify(data));
+        var send = function (scans) {
+            $ionicLoading.show({
+                template: scans.length + " scans en cours d'envoi..."
+            });
+
+            var hide = $ionicLoading.hide;
+
+            var success = function (data) {
+                Scans.markAsSent();
+                console.debug(JSON.stringify(data));
+                hide();
+            };
+
+            var failure = function () {
+                hide();
+                $ionicPopup.alert({
+                    title: "Échec !",
+                    template: "L'envoi a échoué, il faut réessayer plus tard ou taper sur Cyril (amicalement)."
+                });
+            };
+
+            AfupConfig.send(scans, success, failure);
         };
 
         $scope.sendAll = function () {
-            AfupConfig.send(Scans.getAll(), success);
+            send(Scans.getAll());
         };
         $scope.sendCurrent = function () {
-            AfupConfig.send(Scans.getCurrent(), success);
+            send(Scans.getCurrent());
         };
 });

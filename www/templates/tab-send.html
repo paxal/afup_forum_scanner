@@ -9,14 +9,14 @@
                 <span class="input-label">Post token</span>
                 <input type="text" ng-model="post_token" ng-change="post_token_change()" />
             </label>
-            <label class="item item-input">
-                <span class="input-label">MD5 Salt</span>
-                <input type="text" ng-model="md5_salt" ng-change="md5_salt_change()" />
-            </label>
+            <!--<label class="item item-input">-->
+                <!--<span class="input-label">MD5 Salt</span>-->
+                <!--<input type="text" ng-model="md5_salt" ng-change="md5_salt_change()" />-->
+            <!--</label>-->
             <hr />
-            <input class="button button-royal" type="submit" value="Send unsubmitted" ng-click="sendCurrent()" />
+            <input class="button button-royal" type="submit" value="Envoyer les nouveaux scans" ng-click="sendCurrent()" />
             <hr />
-            <input class="button" type="submit" value="Send all" ng-click="sendAll()">
+            <input class="button" type="submit" value="Envoyer tous les scans" ng-click="sendAll()">
         </div>
     </ion-content>
 </ion-view>
