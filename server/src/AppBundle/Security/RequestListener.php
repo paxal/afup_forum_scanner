@@ -20,6 +20,11 @@ class RequestListener implements EventSubscriberInterface, LoggerAwareInterface
      */
     private $logger;
 
+    /**
+     * @__construct
+     *
+     * @param string $token AFUP Token
+     */
     public function __construct($token)
     {
         $this->token = $token;
@@ -29,12 +34,21 @@ class RequestListener implements EventSubscriberInterface, LoggerAwareInterface
      * Sets a logger instance on the object
      *
      * @param LoggerInterface $logger
+     *
+     * @return void
      */
     public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
     }
 
+    /**
+     * Check that afup token is correct if route is marked as secure.
+     *
+     * @param FilterControllerEvent $event
+     *
+     * @throws AccessDeniedHttpException
+     */
     public function onKernelController(FilterControllerEvent $event)
     {
         $request = $event->getRequest();
@@ -55,6 +69,9 @@ class RequestListener implements EventSubscriberInterface, LoggerAwareInterface
         }
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public static function getSubscribedEvents()
     {
         return [ 'kernel.controller' => 'onKernelController' ];

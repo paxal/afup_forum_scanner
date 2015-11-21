@@ -26,6 +26,8 @@ class ApiController
     }
 
     /**
+     * Handle OPTIONS request that is sent by browsers.
+     *
      * @Route("/", methods={"OPTIONS"}, defaults={"api_secure"=false})
      */
     public function optionsAction(Request $request)
@@ -59,6 +61,8 @@ class ApiController
     }
 
     /**
+     * Save the post urls.
+     *
      * @Route("/", methods={"POST"}, defaults={"api_secure"=true})
      */
     public function saveAction(Request $request)
@@ -71,6 +75,11 @@ class ApiController
         return new JsonResponse(['ok :)'], 200, $this->getAllowedRequestHeaders());
     }
 
+    /**
+     * Return headers that will make the request valid for browsers
+     *
+     * @return array
+     */
     private function getAllowedRequestHeaders()
     {
         return [
