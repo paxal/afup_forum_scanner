@@ -23,7 +23,7 @@ angular.module('starter.services', [ 'ngMd5', 'ngResource' ])
                     return $window.localStorage[name] = value;
                 },
                 init: function () {
-                    $window.localStorage['api'] = $window.localStorage['api'] || 'http://afup.org/forumphp/register.php'
+                    $window.localStorage['api'] = $window.localStorage['api'] || 'http://afup.cyril.me/'
                 },
                 // Send data
                 send: function (urls, success, failure) {
