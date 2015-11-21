@@ -28,3 +28,10 @@ will be read in the `RequestListener` class : fast and simple.
 
 The token security value is set in the `parameters.yml` file.
 
+## Configure your server
+
+A simple way to run the server project is to run it via PHP :
+
+```bash
+php -S localhost:8008 web/app_dev.php
+```
