@@ -4,6 +4,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Manager\ScanManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -23,6 +24,15 @@ class ApiController
     public function __construct(ScanManager $scanManager)
     {
         $this->scanManager = $scanManager;
+    }
+
+    /**
+     * @Route("/", methods={"GET"})
+     * @Template()
+     */
+    public function indexAction()
+    {
+        return [];
     }
 
     /**
